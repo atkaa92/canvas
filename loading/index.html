@@ -1,0 +1,74 @@
+<div class="canvasParent" style="width: 310px;height: 310px;margin: auto;">
+    <canvas></canvas>
+</div>
+<script>
+
+    var canvas = document.querySelector('canvas')
+    var canvasParent = document.querySelector('.canvasParent')
+    var c = canvas.getContext('2d')
+
+    canvas.width = canvasParent.offsetWidth
+    canvas.height = canvasParent.offsetHeight 
+
+    var colors = ['#583f80', '#7650b3', '#2d1158', '#8d62ce']
+
+    addEventListener('resize', () => {
+        canvas.width = canvasParent.offsetWidth
+        canvas.height = canvasParent.offsetHeight 
+        init()
+    })
+
+    function Loading(x, y, radius, color) {
+        this.x = x
+        this.y = y
+        this.radius = radius
+        this.color = color
+        this.radians = Math.random() * Math.PI * 2
+        this.velocity = 0.05
+        this.distanceFromCenter = Math.floor(Math.random() * (150 - 60 + 1) + 60)
+
+        this.draw = function(lastPoint) {
+            c.beginPath()
+            c.strokeStyle = this.color
+            c.lineWidth = this.radius
+            c.moveTo(lastPoint.x, lastPoint.y)
+            c.lineTo(this.x, this.y)
+            c.stroke()
+            c.closePath()
+        }
+
+        this.update = function() {
+            var lastPoint = {x: this.x, y: this.y}
+            this.radians += this.velocity
+            this.x = x + Math.cos(this.radians) * this.distanceFromCenter
+            this.y = y + Math.sin(this.radians) * this.distanceFromCenter
+            this.draw(lastPoint)
+        }
+    }
+
+    var loadings
+    function initCanvacLoading() {
+        loadings = []
+        for (i = 0; i < 50; i++) {
+            var radius = (Math.random() * 2) + 1
+            loadings.push(new Loading(canvas.width / 2, canvas.height / 2, radius, colors[Math.floor(Math.random() * colors.length)]));
+        }
+    }
+
+    function animateCanvasLoading() {
+        requestAnimationFrame(animateCanvasLoading)
+        c.font="22px Arial"; 
+        c.textAlign="center"; 
+        c.fillStyle = '#583f80';
+        c.fillText("D W E L",canvas.width / 2, canvas.height / 2);
+        c.fillStyle = 'rgba(255, 255, 255, 0.05)'
+        c.fillRect(0, 0, canvas.width, canvas.height)
+        loadings.forEach(loading => {
+            loading.update();
+        });
+    }
+
+    initCanvacLoading()
+    animateCanvasLoading()
+
+</script>
